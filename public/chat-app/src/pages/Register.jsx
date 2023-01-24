@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Logo from "../assets/logo.svg";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { registerRoute } from '../utils/APIRoutes';
 
 function Register() {
     const toastOptions = {
@@ -28,7 +30,7 @@ function Register() {
         const { password, confirmPassword, username, email } = values;
         if (password !== confirmPassword) {
             toast.error(
-                "password and confirm password should be same.",
+                "Password and confirm password should be same.",
                 toastOptions
             );
             return false;
@@ -48,13 +50,21 @@ function Register() {
             toast.error("Email is required.", toastOptions);
             return false;
         }
-        
+
         return true;
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        handleValidation();
+        if (handleValidation()) {
+            console.log("in validation", registerRoute);
+            const { password, confirmPassword, username, email } = values;
+            const { data } = await axios.post(registerRoute, {
+                username,
+                email,
+                password,
+            });
+        }
     };
 
     return (
@@ -86,7 +96,7 @@ function Register() {
                     <input
                         type="password"
                         placeholder="Confirm Password"
-                        name="confirmpassword"
+                        name="confirmPassword"
                         onChange={(e) => handleChange(e)}
                     />
                     <button type="submit">Create User</button>
