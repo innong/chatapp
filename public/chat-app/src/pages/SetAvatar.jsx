@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useInsertionEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 import { Buffer } from 'buffer';
@@ -24,6 +24,11 @@ export default function SetAvatar() {
         theme: "dark",
     };
 
+    useEffect(() => {
+        if (!localStorage.getItem("chat-app-user")) {
+            navigate("/login");
+        }
+    }, []);
 
     const setProfilePicture = async () => {
         if (selectedAvatar === undefined) {
@@ -33,7 +38,7 @@ export default function SetAvatar() {
             const { data } = await axios.post(`${setAvatarRoute}/${user._id}`, {
                 image: avatars[selectedAvatar],
             });
-
+            console.log(data);
             if (data.isSet) {
                 user.isAvatarImageSet = true;
                 user.avatarImage = data.image;
