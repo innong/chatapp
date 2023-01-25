@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Logo from "../assets/logo.svg";
 import { toast, ToastContainer } from 'react-toastify';
@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { registerRoute } from '../utils/APIRoutes';
 
 function Register() {
+    const navigate = useNavigate();
     const toastOptions = {
         position: toast.POSITION.TOP_CENTER,
         autoClose: 8000,
@@ -64,6 +65,14 @@ function Register() {
                 email,
                 password,
             });
+            
+            if (data.status === false) {
+                toast.error(data.msg, toastOptions);
+            }
+            if (data.status === true) {
+                localStorage.setItem("chat-app-user", JSON.stringify(data.user));
+                navigate("/");
+            }
         }
     };
 
