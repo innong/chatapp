@@ -44,3 +44,10 @@ module.exports.register = async (req, res, next) => {
         next(ex);
     }
 };
+
+// module.exports.setAvatar = async (req, res, next) => {
+//     try {
+//     } catch (ex) {
+//         next(ex);
+//     }
+// };
