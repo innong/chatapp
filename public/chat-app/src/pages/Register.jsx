@@ -23,6 +23,12 @@ function Register() {
         confirmPassword: "",
     });
 
+    useEffect(() => {
+        if (localStorage.getItem('chat-app-user')) {
+            navigate('/');
+        }
+    }, []);
+
     const handleChange = (event) => {
         setValues({ ...values, [event.target.name]: event.target.value });
     };
@@ -65,7 +71,7 @@ function Register() {
                 email,
                 password,
             });
-            
+
             if (data.status === false) {
                 toast.error(data.msg, toastOptions);
             }
