@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '@multiavatar/multiavatar';
 
 export default function SetAvatar() {
-    const api = "https://api.multiavatar.com";
+    const api = "https://api.multiavatar.com/";
     const navigate = useNavigate();
     const [avatars, setAvatars] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -24,8 +24,11 @@ export default function SetAvatar() {
         theme: "dark",
     };
 
-    const setProfilePicture = async () => {
 
+    const setProfilePicture = async () => {
+        if(selectedAvatar === undefined) {
+            toast.error("Please select an avatar", toastOptions);
+        }
     };
 
     useEffect(() => {
@@ -46,36 +49,45 @@ export default function SetAvatar() {
 
     return (
         <>
-            <Container>
-                <div className="title-contatiner">
-                    <h1>
-                        Pick an avatar as your priofile picture
-                    </h1>
-                </div>
-                <div className="avatars">
-                    {
-                        avatars.map((avatar, index) => {
-                            return (
-                                <div
-                                    key={index}
-                                    className={`avatar ${selectedAvatar === index ? "selected" : ""
-                                        }`}
-                                >
-                                    <img
-                                        src={`data:image/svg+xml;base64,${avatar}`}
-                                        alt="avatar"
-                                        key={avatar}
-                                        onClick={() => setSelectedAvatar(index)}
-                                    />
-                                </div>
-                            );
-                        })}
-                </div>
-                <button className='submit-btn' onClick={setProfilePicture}>
-                    Set as Profile Picture
-                </button>
-                <ToastContainer />
-            </Container>
+        {
+            isLoading ? (
+                <Container>
+                        <img src={loader} alt="loader" className="loader" />
+                </Container>
+            ) :  (
+                <Container>
+                    <div className="title-contatiner">
+                        <h1>
+                            Pick an avatar as your priofile picture
+                        </h1>
+                    </div>
+                    <div className="avatars">
+                        {
+                            avatars.map((avatar, index) => {
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`avatar ${selectedAvatar === index ? "selected" : ""
+                                            }`}
+                                    >
+                                        <img
+                                            src={`data:image/svg+xml;base64,${avatar}`}
+                                            alt="avatar"
+                                            key={avatar}
+                                            onClick={() => setSelectedAvatar(index)}
+                                        />
+                                    </div>
+                                );
+                            })}
+                    </div>
+                    <button className='submit-btn' onClick={setProfilePicture}>
+                        Set as Profile Picture
+                    </button>
+                    <ToastContainer />
+                </Container>
+            )
+        }
+
 
         </>
 
