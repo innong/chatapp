@@ -1,9 +1,13 @@
 import React from 'react'
 import styled from 'styled-components';
+import ChatInput from './ChatInput';
 import Logout from './Logout';
 
-
 export default function ChatContainer({ currentChat }) {
+    const handleSendMsg = async (msg) => {
+
+    }
+
     return (
         <>
             {
@@ -24,8 +28,7 @@ export default function ChatContainer({ currentChat }) {
                             <Logout />
                         </div>
                         <div className="chat-messages"></div>
-                        <div className="chat-input"></div>
-                        
+                        <ChatInput handleSendMsg={handleSendMsg} />
                     </Container>
                 )
             }
@@ -36,7 +39,13 @@ export default function ChatContainer({ currentChat }) {
 }
 
 const Container = styled.div`
-    padding-top: 1rem;
+    display: grid;
+    grid-template-rows: 10% 80% 10%;
+    gap: 0.1rem;
+    overflow: hidden;
+    @media screen and (min-width: 720px) and (max-width: 1080px) {
+        grid-template-rows: 15% 70% 15%;
+    }
     .chat-header {
         display: flex;
         justify-content: space-between;
