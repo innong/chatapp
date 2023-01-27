@@ -9,6 +9,7 @@ function Chat() {
     const navigate = useNavigate();
     const [contacts, setContacts] = useState([]);
     const [currentUser, setCurrentUser] = useState(undefined);
+    const [currentChat, setCurrentChat] = useState(undefined);
 
     useEffect(() => {
         const setUser = async () => {
@@ -35,10 +36,18 @@ function Chat() {
         loadUser();
     }, [currentUser]);
 
+    const handleChatChange = (chat) => {
+        setCurrentUser(chat);
+    };
+
     return (
         <Container>
             <div className="container">
-                <Contacts contacts={contacts} currentUser={currentUser} />
+                <Contacts 
+                    contacts={contacts} 
+                    currentUser={currentUser} 
+                    changeChat={handleChatChange}
+                />
             </div>
         </Container>
     )
