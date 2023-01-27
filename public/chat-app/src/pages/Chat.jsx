@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router';
 import { allUsersRoute } from '../utils/APIRoutes';
 import Contacts from '../component/Contacts';
 import Welcome from '../component/Welcome';
+import ChatContainer from '../component/ChatContainer';
 
 function Chat() {
     const navigate = useNavigate();
     const [contacts, setContacts] = useState([]);
     const [currentUser, setCurrentUser] = useState(undefined);
     const [currentChat, setCurrentChat] = useState(undefined);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         const setUser = async () => {
@@ -18,6 +20,7 @@ function Chat() {
                 navigate("/login");
             } else {
                 setCurrentUser(await JSON.parse(localStorage.getItem("chat-app-user")));
+                setIsLoaded(true);
             }
         };
         setUser();
@@ -38,7 +41,7 @@ function Chat() {
     }, [currentUser]);
 
     const handleChatChange = (chat) => {
-        setCurrentUser(chat);
+        setCurrentChat(chat);
     };
 
     return (
@@ -46,10 +49,16 @@ function Chat() {
             <div className="container">
                 <Contacts 
                     contacts={contacts} 
-                    currentUser={currentUser} 
+                    currentUser={currentUser}
                     changeChat={handleChatChange}
                 />
-                <Welcome currentUser={currentUser}/>
+                {
+                    isLoaded && currentChat === undefined ? (
+                        <Welcome currentUser={currentUser}/>
+                    ) : (
+                        <ChatContainer currentUser ={currentUser} />
+                    )
+                }
             </div>
         </Container>
     )
