@@ -29,7 +29,7 @@ const server = app.listen(process.env.PORT, () =>  {
 
 const io = socket(server, {
     cors: {
-        origin: "http://localhost:3000/",
+        origin: "http://localhost:3000",
         credentials: true,
     }
 });
@@ -37,14 +37,14 @@ const io = socket(server, {
 global.onlineUsers = new Map();
 
 io.on("connection", (socket) => {
-    global.chatsocket =socket;
+    global.chatSocket = socket;
     socket.on("add-user", (userId) => {
         onlineUsers.set(userId, socket.id);
     });
 
-    socket.on("send-msg", (data) =>{
+    socket.on("send-msg", (data) => {
         const sendUserSocket = onlineUsers.get(data.to);
-        if(sendUserSocket){
+        if (sendUserSocket) {
             socket.to(sendUserSocket).emit("msg-recieve", data.msg);
         }
     });

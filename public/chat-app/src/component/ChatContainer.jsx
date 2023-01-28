@@ -4,12 +4,13 @@ import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import Logout from './Logout';
 import { getAllMessagesRoute, sendMessageRoute } from '../utils/APIRoutes';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function ChatContainer({ currentChat, currentUser, socket }) {
     const [messages, setMessages] = useState([]);
     const [arrivalMessage, setArrivalMessage] = useState(null);
     const scrollRef = useRef();
-
+    
     useEffect(() => {
         const getMessage = async () => {
             if(currentChat) {
@@ -33,7 +34,7 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
         socket.current.emit("send-msg", {
             to: currentChat._id,
             from: currentUser._id,
-            message: msg,
+            msg,
         });
 
         const msgs = [...messages];
@@ -54,7 +55,7 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
     }, [arrivalMessage]);
 
     useEffect(() => {
-        scrollRef.current?.scorllIntoView({ behaviour: "smooth" });
+        scrollRef.current?.scrollIntoView({ behaviour: "smooth" });
     }, [messages]);
 
     return (
@@ -80,7 +81,7 @@ export default function ChatContainer({ currentChat, currentUser, socket }) {
                             {
                                 messages.map((message) => {
                                     return (
-                                        <div>
+                                        <div ref={scrollRef} key={uuidv4()}>
                                             <div className={`message ${
                                                 message.fromSelf ? "sended" : "recieved"
                                                 }`}
