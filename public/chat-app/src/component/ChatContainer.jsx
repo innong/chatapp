@@ -1,21 +1,25 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios';
 import styled from 'styled-components';
 import ChatInput from './ChatInput';
 import Logout from './Logout';
-import Messages from './Messages';
 import { getAllMessagesRoute, sendMessageRoute } from '../utils/APIRoutes';
 
-export default function ChatContainer({ currentChat, currentUser }) {
+export default function ChatContainer({ currentChat, currentUser, socket }) {
     const [messages, setMessages] = useState([]);
+    const [arrivalMessage, setArrivalMessage] = useState(null);
+    const scrollRef = useRef();
 
     useEffect(() => {
         const getMessage = async () => {
-            const response = await axios.post(getAllMessagesRoute, {
-                from: currentUser._id,
-                to: currentChat._id,
-            });
-            setMessages(response.data);
+            if(currentChat) {
+                const response = await axios.post(getAllMessagesRoute, {
+                    from: currentUser._id,
+                    to: currentChat._id,
+                });
+                setMessages(response.data);
+            }
+
         };
         getMessage();
     }, [currentChat]);
@@ -26,7 +30,32 @@ export default function ChatContainer({ currentChat, currentUser }) {
             to: currentChat._id,
             message: msg,
         });
+        socket.current.emit("send-msg", {
+            to: currentChat._id,
+            from: currentUser._id,
+            message: msg,
+        });
+
+        const msgs = [...messages];
+        msgs.push({ fromSelf: true, message: msg });
+        setMessages(msgs);
     };
+
+    useEffect(() => {
+        if(socket.current) {
+            socket.current.on("msg-recieve", (msg) => {
+                setArrivalMessage({ fromSelf: false, message: msg });
+            });
+        }
+    }, []);
+
+    useEffect(() => {
+        arrivalMessage && setMessages((prev) => [...prev, arrivalMessage]);
+    }, [arrivalMessage]);
+
+    useEffect(() => {
+        scrollRef.current?.scorllIntoView({ behaviour: "smooth" });
+    }, [messages]);
 
     return (
         <>
